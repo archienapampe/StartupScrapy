@@ -18,7 +18,7 @@ class StartupUrlSpider(scrapy.Spider):
     
     def parse(self, response):
         items = StartupUrlItem()
-        self.logger.info('start scraping')
+        self.logger.info('start scraping urls')
         
         data_json = json.loads(response.text)
         data = data_json['data'].get('list')

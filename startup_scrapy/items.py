@@ -27,48 +27,38 @@ class StartupUrlItem(Item):
 
 class StartupInfoItem(Item):
     company_name = Field(
-        #input_processor=MapCompose(str.strip),
         output_processor=TakeFirst()
     )
     profile_url = Field(
-        #input_processor=MapCompose(str.strip),
         output_processor=TakeFirst()
     )
     company_website_url = Field(
-        #input_processor=MapCompose(str.strip),
         output_processor=TakeFirst()
     )
     location = Field(
-        #input_processor=MapCompose(str.strip),
         output_processor=TakeFirst()
     )
     tags = Field()
     founding_date = Field(
-        #input_processor=MapCompose(str.strip, convert_date),
         input_processor=MapCompose(str.strip, convert_date),
         output_processor=TakeFirst()
     )
     founders = Field()
     employee_range= Field(
-        #input_processor=MapCompose(str.strip),
         output_processor=TakeFirst()
     )
     urls = Field(
         input_processor=MapCompose(parse_urls)
     )
     emails = Field(
-        #input_processor=MapCompose(str.strip),
         output_processor=TakeFirst()
     )
     phones = Field(
-        #input_processor=MapCompose(str.strip),
         output_processor=TakeFirst()
     )
     description_short = Field(
-        #input_processor=MapCompose(str.strip),
         output_processor=TakeFirst()
     )
     description = Field(
-        #input_processor=MapCompose(str.strip),
         output_processor=TakeFirst()
     )

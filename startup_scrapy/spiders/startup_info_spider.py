@@ -34,33 +34,30 @@ class StartupInfoSpider(scrapy.Spider):
         data_json = json.loads(response.text)
         data = data_json['data']
         loader = ItemLoader(item=StartupInfoItem(), selector=data)
-        loader.add_value('company_name', value=data['name'])
-        loader.add_value('profile_url', value=self.startups_url.format(data['slug']))
-        loader.add_value('company_website_url', value=data['metas'].get('website', ''))
-        loader.add_value('location', value=data.get('location', '')[0]['text'])
-        loader.add_value('tags', value=data['metas'].get('market', ''))
-        loader.add_value('founding_date', value=f'{data["metas"].get("found_month", "")} {data["metas"].get("found_year", "")}')
-        loader.add_value('urls', value=f'{data["metas"]["linkedin"]},{data["metas"]["twitter"]},{data["metas"]["facebook"]}')
-        loader.add_value('emails', value=data['metas'].get('email', ''))
-        loader.add_value('phones', value='')
-        loader.add_value('description_short', value=data['metas'].get('short_description', ''))
-        loader.add_value('description', value=data['metas'].get('description', ''))
+        loader.add_value('company_name', data['name'])
+        loader.add_value('profile_url', self.startups_url.format(data['slug']))
+        loader.add_value('company_website_url', data['metas'].get('website', ''))
+        loader.add_value('location', data.get('location', '')[0]['text'])
+        loader.add_value('tags', data['metas'].get('market', ''))
+        loader.add_value('founding_date', f'{data["metas"].get("found_month", "")} {data["metas"].get("found_year", "")}')
+        loader.add_value('urls', f'{data["metas"]["linkedin"]},{data["metas"]["twitter"]},{data["metas"]["facebook"]}')
+        loader.add_value('emails', data['metas'].get('email', ''))
+        loader.add_value('phones', '')
+        loader.add_value('description_short', data['metas'].get('short_description', ''))
+        loader.add_value('description', data['metas'].get('description', ''))
         startup_item = loader.load_item()
         
         yield scrapy.Request(url=self.api_url_team.format(data['id']),
-                                  callback=self.parse_team, meta={'startup_item': startup_item})
+                                callback=self.parse_team, meta={'startup_item': startup_item})
             
     def parse_team(self, response):
         self.logger.info('start scraping team info')
         startup_item = response.meta['startup_item']
+        
         data_json = json.loads(response.text)
         data = data_json['data']
         loader = ItemLoader(item=startup_item, selector=data)
-        loader.add_value('employee_range', value=data['count'])
+        loader.add_value('employee_range', data['count'])
         for info_user in data['site_users']:   
-            loader.add_value('founders', value=info_user['name'])
+            loader.add_value('founders', info_user['name'])
             yield loader.load_item()
-            
-            
-            
-            
