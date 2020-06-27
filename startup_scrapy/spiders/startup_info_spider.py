@@ -22,13 +22,24 @@ class StartupInfoSpider(scrapy.Spider):
     def __init__(self):
         with open('urls.csv', 'r') as list_urls:
             list_urls = csv.reader(list_urls)
-            next(list_urls)
-            self.slugs_from_urls_to_parse = random.sample([row[0][24:] for row in list_urls], 250)
-        
+            try:
+                next(list_urls)
+            except StopIteration:
+                self.slugs_from_urls_to_parse = []
+            else:
+                try:
+                    self.slugs_from_urls_to_parse = random.sample([row[0][24:] for row in list_urls], 250)
+                except ValueError as e:
+                    print(e)
+                    self.slugs_from_urls_to_parse = []
+                    
     def start_requests(self):
-        for slug in self.slugs_from_urls_to_parse:
-            yield scrapy.Request(url=self.api_url_startup.format(slug), callback=self.parse)
-      
+        if self.slugs_from_urls_to_parse:
+            for slug in self.slugs_from_urls_to_parse:
+               yield scrapy.Request(url=self.api_url_startup.format(slug), callback=self.parse)
+        else:
+            return None
+    
     def parse(self, response):
         self.logger.info('start scraping startup info')
         data_json = json.loads(response.text)

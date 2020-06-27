@@ -12,6 +12,7 @@ class StartupUrlSpider(scrapy.Spider):
     startup_url = 'https://e27.co/startups/{}'
     custom_settings = {
         'ITEM_PIPELINES': {
+            'startup_scrapy.pipelines.DuplicatesUrlPipeline': 50,
             'startup_scrapy.pipelines.CsvUrlPipeline': 100,
         }
     }
